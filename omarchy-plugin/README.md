@@ -3,7 +3,7 @@
 A bar widget for the [Omarchy](https://omarchy.org) shell that controls
 [Stickit](https://github.com/menobass/stickit), the encrypted floating sticky-notes app.
 
-![Stickit notes and list](assets/screenshot.png)
+![Stickit notes and list](preview.png)
 
 - **Click**: show or hide your notes list (starts Stickit if it isn't running).
 - **Middle-click**: new note (or the list, if the vault is locked).
