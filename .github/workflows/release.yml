@@ -1,6 +1,8 @@
 name: release
 
-# Builds installers for Linux, macOS and Windows and attaches them to a draft GitHub release.
+# Builds the Linux installers and attaches them to a draft GitHub release. macOS and Windows are
+# left out until they are tested (issue #1); add `macos-latest` (args: --target universal-apple-darwin)
+# and `windows-latest` back to the matrix when they are.
 # Run it by pushing a tag (git tag v0.1.0 && git push --tags) or from the Actions tab.
 on:
   push:
@@ -18,10 +20,6 @@ jobs:
         include:
           - os: ubuntu-22.04
             args: ""
-          - os: macos-latest
-            args: "--target universal-apple-darwin"
-          - os: windows-latest
-            args: ""
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -38,9 +36,6 @@ jobs:
           cache: npm
 
       - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ runner.os == 'macOS' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
-
       - uses: swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
@@ -53,6 +48,6 @@ jobs:
         with:
           tagName: v__VERSION__
           releaseName: Stickit v__VERSION__
-          releaseBody: See the README for install steps. Builds are unsigned, so macOS and Windows will warn on first launch.
+          releaseBody: Linux only. macOS and Windows builds are untested and not published (see issue #1).
           releaseDraft: true
           args: ${{ matrix.args }}

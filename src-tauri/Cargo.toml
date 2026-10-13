@@ -1,6 +1,6 @@
 [package]
 name = "stickit"
-version = "0.1.0"
+version = "0.1.1"
 description = "Floating, encrypted sticky notes with optional Hive backup"
 authors = ["menobass"]
 edition = "2024"
