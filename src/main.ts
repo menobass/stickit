@@ -30,6 +30,11 @@ function button(label: string, title: string, onclick: () => void) {
   return el<HTMLButtonElement>("button", { textContent: label, title, onclick });
 }
 
+// Drawn rather than a text glyph: the arrow character isn't in every font, and the note font
+// (Handwriting) made it fall back to a tiny unreadable mark.
+const SYNC_ICON =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg>';
+
 function show(...kids: Node[]) {
   document.body.replaceChildren(...kids);
 }
@@ -222,7 +227,7 @@ function listView() {
       );
     }
 
-    const syncBtn = button("⟳", "Sync now", async () => {
+    const syncBtn = button("", "Sync now", async () => {
       if (!(await getConfig()).account) return hiveScreen(render);
       syncBtn.disabled = true;
       syncBtn.textContent = "…";
@@ -234,8 +239,9 @@ function listView() {
         footer.replaceChildren(el("p", { className: "err", textContent: `Sync failed: ${e instanceof Error ? e.message : e}` }));
       }
       syncBtn.disabled = false;
-      syncBtn.textContent = "⟳";
+      syncBtn.innerHTML = SYNC_ICON;
     });
+    syncBtn.innerHTML = SYNC_ICON;
 
     search.oninput = refresh;
     refreshList = refresh;

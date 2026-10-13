@@ -1,5 +1,7 @@
 # Stickit
 
+![Stickit notes and list](docs/screenshot.png)
+
 Floating, see-through sticky notes for Linux (built for [Omarchy](https://omarchy.org) and
 Hyprland), encrypted on your machine, with optional backup and sync through the
 [Hive](https://hive.io) blockchain and a phone-friendly web app (PWA) that reads the same notes.
