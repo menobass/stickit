@@ -44,7 +44,8 @@ To try it without building a release: `npm run tauri dev`.
 Linux, macOS and Windows all build from the same source. Pushing a `v*` tag runs
 `.github/workflows/release.yml`, which attaches `.deb`, `.rpm`, AppImage, `.dmg` and
 Windows installers to a draft release. Those builds are unsigned, so macOS (Gatekeeper)
-and Windows (SmartScreen) warn on first launch. Only Linux has been tested so far.
+and Windows (SmartScreen) warn on first launch. Only Linux has been tested so far; the Windows and macOS builds are known to be rough
+(see [issue #1](https://github.com/menobass/stickit/issues/1)).
 
 ### Make notes float (Hyprland)
 

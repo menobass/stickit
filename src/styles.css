@@ -1,6 +1,9 @@
 :root {
-  --note-bg: rgba(255, 233, 120, 0.78);
-  --list-bg: rgba(24, 24, 28, 0.82);
+  --alpha: 0.8;
+  --note-font: system-ui, sans-serif;
+  --note-size: 14px;
+  --note-bg: rgba(255, 233, 120, var(--alpha));
+  --list-bg: rgba(24, 24, 28, var(--alpha));
   font-family: system-ui, sans-serif;
   font-size: 14px;
 }
@@ -16,7 +19,7 @@ button:hover { background: rgba(128, 128, 128, 0.3); }
 body.note { background: var(--note-bg); color: #2b2400; }
 body.note textarea {
   flex: 1; border: 0; outline: 0; resize: none; background: transparent;
-  color: inherit; font: inherit; padding: 4px 12px 12px;
+  color: inherit; font: inherit; font-family: var(--note-font); font-size: var(--note-size); padding: 4px 12px 12px;
 }
 .grip { position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; cursor: se-resize; }
 
@@ -27,7 +30,7 @@ body.list input {
   background: rgba(255, 255, 255, 0.12); color: inherit; font: inherit;
 }
 body.list ul { flex: 1; overflow-y: auto; list-style: none; margin: 0; padding: 0 8px 8px; }
-body.list li { padding: 8px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.list li { font-family: var(--note-font); font-size: var(--note-size); padding: 8px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 body.list li:hover { background: rgba(255, 255, 255, 0.12); }
 body.list li.empty { opacity: 0.5; cursor: default; }
 
@@ -64,3 +67,9 @@ button.pinned { margin: 8px 12px 12px; flex: none; }
 .help details { margin-bottom: 6px; }
 .help summary { cursor: pointer; }
 .help p { margin: 6px 0 8px; opacity: 0.85; line-height: 1.4; }
+
+/* settings */
+.panel label { display: flex; flex-direction: column; gap: 4px; }
+.panel select { padding: 6px 10px; border: 0; border-radius: 6px; font: inherit; background: rgba(255, 255, 255, 0.14); color: inherit; }
+.panel select option { color: #000; }
+.sample { font-family: var(--note-font); font-size: var(--note-size); }

@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { openUrl } from "@tauri-apps/plugin-opener";
+import { FONTS, getLook, setLook, type FontKey } from "./appearance";
 import {
   connectAccount, getConfig, joinRemoteVault, notify, rcPercent, syncNow,
   RC_PAUSE_PCT, RC_WARN_PCT, type HiveConfig, type RemoteVault,
@@ -26,7 +27,7 @@ function bar(...buttons: HTMLElement[]) {
 }
 
 function button(label: string, title: string, onclick: () => void) {
-  return el("button", { textContent: label, title, onclick });
+  return el<HTMLButtonElement>("button", { textContent: label, title, onclick });
 }
 
 function show(...kids: Node[]) {
@@ -221,12 +222,28 @@ function listView() {
       );
     }
 
+    const syncBtn = button("⟳", "Sync now", async () => {
+      if (!(await getConfig()).account) return hiveScreen(render);
+      syncBtn.disabled = true;
+      syncBtn.textContent = "…";
+      try {
+        await syncNow();
+        await refresh();
+        await fillFooter(footer);
+      } catch (e) {
+        footer.replaceChildren(el("p", { className: "err", textContent: `Sync failed: ${e instanceof Error ? e.message : e}` }));
+      }
+      syncBtn.disabled = false;
+      syncBtn.textContent = "⟳";
+    });
+
     search.oninput = refresh;
     refreshList = refresh;
     show(
       bar(
         button("+", "New note", () => invoke("create_note")),
-        button("⚙", "Hive backup", () => hiveScreen(render)),
+        syncBtn,
+        button("⚙", "Settings", () => settingsScreen(render)),
         button("🔒", "Lock vault", () => invoke("lock_vault")),
         button("–", "Hide to tray", () => win.close()),
       ),
@@ -297,6 +314,34 @@ function help() {
     { className: "help" },
     ...HELP.map(([q, a]) => el("details", {}, el("summary", { textContent: q }), el("p", { textContent: a }))),
     link,
+  );
+}
+
+function settingsScreen(back: () => void) {
+  const look = getLook();
+  const font = el<HTMLSelectElement>(
+    "select",
+    {},
+    ...Object.entries(FONTS).map(([k, f]) => el("option", { value: k, textContent: f.label, selected: k === look.font })),
+  );
+  const opacity = el<HTMLInputElement>("input", { type: "range", min: "30", max: "100", value: String(look.opacity) });
+  const pct = el("span", { className: "muted", textContent: `${look.opacity}%` });
+  const save = () => {
+    setLook({ font: font.value as FontKey, opacity: Number(opacity.value) });
+    pct.textContent = `${opacity.value}%`;
+  };
+  font.onchange = save;
+  opacity.oninput = save;
+  show(
+    bar(button("←", "Back", back), button("–", "Hide to tray", () => win.close())),
+    el(
+      "div",
+      { className: "panel" },
+      el("label", {}, el("span", { textContent: "Note font" }), font),
+      el("p", { className: "sample", textContent: "The quick brown fox jumps over the lazy dog." }),
+      el("label", {}, el("span", { textContent: "Window opacity" }), el("div", { className: "row" }, opacity, pct)),
+      el("button", { className: "primary", textContent: "Hive backup", onclick: () => hiveScreen(() => settingsScreen(back)) }),
+    ),
   );
 }
 
