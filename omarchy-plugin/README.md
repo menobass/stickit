@@ -11,7 +11,12 @@ The widget holds no data and needs no network. It only launches `stickit --toggl
 
 ## Install
 
-You need the Stickit desktop app installed and `stickit` on the shell's `PATH`.
+You need the Stickit desktop app first, with `stickit` on the shell's `PATH`. Download the
+`.deb`, `.rpm` or AppImage from the
+[Stickit releases](https://github.com/menobass/stickit/releases/latest), or build it from source
+(see the [Stickit README](https://github.com/menobass/stickit#install-the-desktop-app)). Linux only for now.
+
+Then add the widget:
 
 ```sh
 omarchy plugin add https://github.com/menobass/omarchy-stickit.git --enable
@@ -47,11 +52,6 @@ omarchy plugin remove io.github.menobass.stickit
 - **The list opens but the vault is locked:** that's expected after a restart; enter your
   passphrase.
 - **Edited the plugin and nothing changed:** run `omarchy restart shell`.
-
-## Publishing this folder as its own repo
-
-`omarchy plugin add` installs a repo whose root contains `manifest.json`. Publish the
-`omarchy-plugin/` folder of the Stickit repo as the root of its own repository.
 
 ## License
 
