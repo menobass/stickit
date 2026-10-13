@@ -5,8 +5,10 @@
   "version": "0.1.0",
   "author": "menobass",
   "license": "MIT",
-  "description": "Bar button for Stickit, the encrypted sticky-notes app with optional Hive backup. Click to show or hide your notes, middle-click for a new note.",
-  "kinds": ["bar-widget"],
+  "description": "Bar button for Stickit's encrypted floating sticky notes.",
+  "kinds": [
+    "bar-widget"
+  ],
   "entryPoints": {
     "barWidget": "BarWidget.qml"
   },
@@ -14,7 +16,11 @@
     "displayName": "Stickit",
     "description": "Sticky-note button: click toggles your notes, middle-click starts a new note.",
     "category": "Productivity",
-    "aliases": ["stickit", "notes", "sticky"],
+    "aliases": [
+      "stickit",
+      "notes",
+      "sticky"
+    ],
     "allowMultiple": false,
     "defaultSection": "right"
   }
