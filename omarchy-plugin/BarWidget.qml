@@ -20,8 +20,14 @@ BarWidget {
     // e.g. "/home/you/.local/bin/stickit".
     readonly property string command: setting("command", "stickit")
 
+    readonly property string downloadUrl: "https://github.com/menobass/stickit/releases/latest"
+
+    // If the app isn't installed, say so and open the download page instead of failing silently.
     function run(flag) {
-        Quickshell.execDetached({ command: [root.command, flag] })
+        Quickshell.execDetached({ command: ["sh", "-c",
+            'if command -v "$1" >/dev/null 2>&1; then exec "$1" "$2"; ' +
+            'else notify-send "Stickit app not installed" "Opening the download page"; xdg-open "$3"; fi',
+            "sh", root.command, flag, root.downloadUrl] })
     }
 
     WidgetButton {

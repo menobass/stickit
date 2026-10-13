@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "io.github.menobass.stickit",
   "name": "Stickit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "menobass",
   "license": "MIT",
   "description": "Bar button for Stickit's encrypted floating sticky notes.",

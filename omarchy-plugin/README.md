@@ -49,6 +49,8 @@ omarchy plugin remove io.github.menobass.stickit
 
 ## Troubleshooting
 
+- **Clicking opens the download page:** the `stickit` app isn't installed (or isn't on the shell's
+  `PATH`). Install it from the releases page, or see Settings below for the `command` path.
 - **Nothing happens on click:** check that `stickit` runs from a terminal, then see Settings
   above for the `command` path.
 - **The list opens but the vault is locked:** that's expected after a restart; enter your
