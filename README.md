@@ -39,6 +39,13 @@ install -Dm755 src-tauri/target/release/stickit ~/.local/bin/stickit
 
 To try it without building a release: `npm run tauri dev`.
 
+### Other platforms
+
+Linux, macOS and Windows all build from the same source. Pushing a `v*` tag runs
+`.github/workflows/release.yml`, which attaches `.deb`, `.rpm`, AppImage, `.dmg` and
+Windows installers to a draft release. Those builds are unsigned, so macOS (Gatekeeper)
+and Windows (SmartScreen) warn on first launch. Only Linux has been tested so far.
+
 ### Make notes float (Hyprland)
 
 Stickit draws its own transparency, so tell Hyprland to float the windows and not dim them a
