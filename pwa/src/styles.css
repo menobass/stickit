@@ -1,0 +1,37 @@
+:root {
+  --bg: #fff8d6;
+  --fg: #2b2400;
+  --card: rgba(255, 255, 255, 0.55);
+  --line: rgba(0, 0, 0, 0.12);
+  --accent: #b88a00;
+  font-family: system-ui, sans-serif;
+  font-size: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #1d1b12; --fg: #f1e9c0; --card: rgba(255, 255, 255, 0.07); --line: rgba(255, 255, 255, 0.14); --accent: #f6e27a; }
+}
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); }
+#app { display: flex; flex-direction: column; height: 100%; max-width: 640px; margin: 0 auto;
+  padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom); box-sizing: border-box; }
+header { display: flex; align-items: center; gap: 4px; padding: 10px 0; }
+header h1 { margin: 0; font-size: 1.2rem; }
+.grow { flex: 1; }
+button { font: inherit; color: inherit; background: none; border: 0; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+button:hover { background: var(--line); }
+input, textarea { font: inherit; color: inherit; background: var(--card); border: 1px solid var(--line);
+  border-radius: 10px; padding: 10px 12px; outline: none; }
+input:focus, textarea:focus { border-color: var(--accent); }
+ul { flex: 1; overflow-y: auto; list-style: none; margin: 8px 0; padding: 0; }
+li { padding: 12px; border-radius: 10px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+li:hover { background: var(--card); }
+li.empty { opacity: 0.5; cursor: default; }
+textarea { flex: 1; resize: none; margin-bottom: 12px; }
+footer { padding: 8px 0 12px; font-size: 0.8rem; opacity: 0.75; }
+.err { color: #d33; margin: 0; min-height: 1em; }
+.panel { display: flex; flex-direction: column; gap: 10px; }
+.panel p { margin: 0; line-height: 1.4; }
+.primary { background: var(--accent); color: #1d1b12; font-weight: 600; }
+.link { opacity: 0.7; text-decoration: underline; align-self: flex-start; margin-top: 8px; }
+.fab { position: fixed; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom)); width: 56px; height: 56px;
+  border-radius: 50%; font-size: 28px; padding: 0; background: var(--accent); color: #1d1b12;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3); }
