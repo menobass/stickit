@@ -330,6 +330,9 @@ function settingsScreen(back: () => void) {
     {},
     ...Object.entries(FONTS).map(([k, f]) => el("option", { value: k, textContent: f.label, selected: k === look.font })),
   );
+  // WebKit (the macOS/Linux webview) sometimes leaves the closed select showing blank for an
+  // option marked `selected` before insertion; setting .value after the fact forces it to paint.
+  font.value = look.font;
   const opacity = el<HTMLInputElement>("input", { type: "range", min: "30", max: "100", value: String(look.opacity) });
   const pct = el("span", { className: "muted", textContent: `${look.opacity}%` });
   const save = () => {
