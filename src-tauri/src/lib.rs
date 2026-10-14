@@ -11,7 +11,7 @@ use std::sync::{Mutex, MutexGuard};
 use std::time::{Duration, Instant};
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
-use tauri::{AppHandle, Emitter, Manager, PhysicalPosition, PhysicalSize, RunEvent, State, WebviewUrl, WebviewWindowBuilder, WindowEvent};
+use tauri::{AppHandle, Emitter, LogicalPosition, LogicalSize, Manager, RunEvent, State, WebviewUrl, WebviewWindowBuilder, WindowEvent};
 
 /// Auto-sync waits this long after the last edit, so a burst of typing is one sync.
 const AUTOSYNC_DELAY: Duration = Duration::from_secs(120);
@@ -261,11 +261,12 @@ fn open_note_window(app: AppHandle, db_: State<Db>, sess: State<Sess>, id: i64) 
         .transparent(true)
         .build()
         .map_err(err)?;
-    // Sizes are physical pixels (same unit we save in on_window_event).
-    let _ = win.set_size(PhysicalSize::new(note.w, note.h));
+    // Sizes are logical pixels (same unit we save in on_window_event), so a note is the same
+    // physical size on every display regardless of its scale factor (e.g. Retina on macOS).
+    let _ = win.set_size(LogicalSize::new(note.w as f64, note.h as f64));
     // Wayland ignores client-side positioning; this only takes effect on X11.
     if let (Some(x), Some(y)) = (note.x, note.y) {
-        let _ = win.set_position(PhysicalPosition::new(x, y));
+        let _ = win.set_position(LogicalPosition::new(x as f64, y as f64));
     }
     Ok(())
 }
@@ -603,7 +604,9 @@ pub fn run() {
             }
             let Some(id) = note_id(window.label()) else { return };
             if matches!(event, WindowEvent::Moved(_) | WindowEvent::Resized(_)) {
-                if let (Ok(p), Ok(s)) = (window.outer_position(), window.inner_size()) {
+                if let (Ok(scale), Ok(p), Ok(s)) = (window.scale_factor(), window.outer_position(), window.inner_size()) {
+                    let p = p.to_logical::<i32>(scale);
+                    let s = s.to_logical::<u32>(scale);
                     let db_ = window.state::<Db>();
                     let _ = db::set_geometry(&db(&db_), id, p.x, p.y, s.width, s.height);
                 }
