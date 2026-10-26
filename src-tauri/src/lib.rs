@@ -213,12 +213,19 @@ fn get_note(db_: State<Db>, sess: State<Sess>, id: i64) -> Res<Option<NoteView>>
     view(&n, &s).map(Some)
 }
 
+// The commands that build windows are async so they run off the main thread: on Windows,
+// building a webview window from a sync command or event handler deadlocks (see Tauri's
+// WebviewWindowBuilder docs).
 #[tauri::command]
-fn create_note(app: AppHandle, db_: State<Db>, sess: State<Sess>) -> Res<i64> {
-    vault_of(&sess.0.lock().unwrap())?;
-    let id = db::create(&db(&db_), &crypto::new_id()).map_err(err)?;
-    open_note_window(app.clone(), db_, sess, id)?;
-    changed(&app);
+async fn create_note(app: AppHandle) -> Res<i64> {
+    new_note(&app)
+}
+
+fn new_note(app: &AppHandle) -> Res<i64> {
+    vault_of(&app.state::<Sess>().0.lock().unwrap())?;
+    let id = db::create(&db(&app.state()), &crypto::new_id()).map_err(err)?;
+    open_note(app, id)?;
+    changed(app);
     Ok(id)
 }
 
@@ -248,14 +255,18 @@ fn delete_note(app: AppHandle, db_: State<Db>, sess: State<Sess>, id: i64) -> Re
 }
 
 #[tauri::command]
-fn open_note_window(app: AppHandle, db_: State<Db>, sess: State<Sess>, id: i64) -> Res<()> {
-    vault_of(&sess.0.lock().unwrap())?;
+async fn open_note_window(app: AppHandle, id: i64) -> Res<()> {
+    open_note(&app, id)
+}
+
+fn open_note(app: &AppHandle, id: i64) -> Res<()> {
+    vault_of(&app.state::<Sess>().0.lock().unwrap())?;
     let label = format!("note-{id}");
     if let Some(w) = app.get_webview_window(&label) {
         return w.set_focus().map_err(err);
     }
-    let note = db::get(&db(&db_), id).map_err(err)?.ok_or("note not found")?;
-    let win = WebviewWindowBuilder::new(&app, label, WebviewUrl::App(format!("index.html?note={id}").into()))
+    let note = db::get(&db(&app.state()), id).map_err(err)?.ok_or("note not found")?;
+    let win = WebviewWindowBuilder::new(app, label, WebviewUrl::App(format!("index.html?note={id}").into()))
         .title("Stickit note")
         .decorations(false)
         .transparent(true)
@@ -511,11 +522,15 @@ fn show_list(app: &AppHandle) {
     }
 }
 
-/// New note, or the list when there's no unlocked vault to make one in.
+/// New note, or the list when there's no unlocked vault to make one in. Called from the tray menu
+/// and single-instance handlers, which run on the main thread, so the window is built elsewhere.
 fn new_note_or_list(app: &AppHandle) {
-    if create_note(app.clone(), app.state(), app.state()).is_err() {
-        show_list(app);
-    }
+    let app = app.clone();
+    std::thread::spawn(move || {
+        if new_note(&app).is_err() {
+            show_list(&app);
+        }
+    });
 }
 
 /// What a launch argument asks of the running app: `--new` for a note, `--toggle` for the list.
