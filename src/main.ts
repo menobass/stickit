@@ -335,12 +335,14 @@ function settingsScreen(back: () => void) {
   font.value = look.font;
   const opacity = el<HTMLInputElement>("input", { type: "range", min: "30", max: "100", value: String(look.opacity) });
   const pct = el("span", { className: "muted", textContent: `${look.opacity}%` });
+  const lines = el<HTMLInputElement>("input", { type: "checkbox", checked: look.lines });
   const save = () => {
-    setLook({ font: font.value as FontKey, opacity: Number(opacity.value) });
+    setLook({ font: font.value as FontKey, opacity: Number(opacity.value), lines: lines.checked });
     pct.textContent = `${opacity.value}%`;
   };
   font.onchange = save;
   opacity.oninput = save;
+  lines.onchange = save;
   show(
     bar(button("←", "Back", back), button("–", "Hide to tray", () => win.close())),
     el(
@@ -348,6 +350,7 @@ function settingsScreen(back: () => void) {
       { className: "panel" },
       el("label", {}, el("span", { textContent: "Note font" }), font),
       el("p", { className: "sample", textContent: "The quick brown fox jumps over the lazy dog." }),
+      el("label", { className: "check" }, lines, el("span", { textContent: "Lined paper" })),
       el("label", {}, el("span", { textContent: "Window opacity" }), el("div", { className: "row" }, opacity, pct)),
       el("button", { className: "primary", textContent: "Hive backup", onclick: () => hiveScreen(() => settingsScreen(back)) }),
     ),

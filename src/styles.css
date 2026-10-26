@@ -21,6 +21,15 @@ body.note textarea {
   flex: 1; border: 0; outline: 0; resize: none; background: transparent;
   color: inherit; font: inherit; font-family: var(--note-font); font-size: var(--note-size); padding: 4px 12px 12px;
 }
+/* Lined paper: one rule per line, offset by the textarea's top padding; `local` makes the
+   rules scroll with the text instead of staying put. */
+.lined body.note textarea {
+  line-height: var(--note-line);
+  background-image: linear-gradient(transparent calc(var(--note-line) - 1px), rgba(43, 36, 0, 0.18) 0);
+  background-size: 100% var(--note-line);
+  background-position: 0 4px;
+  background-attachment: local;
+}
 .grip { position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; cursor: se-resize; }
 
 /* list window */
@@ -70,6 +79,7 @@ button.pinned { margin: 8px 12px 12px; flex: none; }
 
 /* settings */
 .panel label { display: flex; flex-direction: column; gap: 4px; }
+.panel label.check { flex-direction: row; align-items: center; gap: 8px; }
 .panel select { padding: 6px 10px; border: 0; border-radius: 6px; font: inherit; background: rgba(255, 255, 255, 0.14); color: inherit; }
 .panel select option { color: #000; }
 .sample { font-family: var(--note-font); font-size: var(--note-size); }
