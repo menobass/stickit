@@ -1,7 +1,6 @@
 name: release
 
-# Builds the Linux and macOS installers and attaches them to a draft GitHub release. Windows is
-# left out until it's tested (issue #1); add `windows-latest` back to the matrix when it is.
+# Builds the Linux, macOS and Windows installers and attaches them to a draft GitHub release.
 # Run it by pushing a tag (git tag v0.1.0 && git push --tags) or from the Actions tab.
 on:
   push:
@@ -21,6 +20,8 @@ jobs:
             args: ""
           - os: macos-latest
             args: "--target universal-apple-darwin"
+          - os: windows-latest
+            args: ""
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -51,6 +52,6 @@ jobs:
         with:
           tagName: v__VERSION__
           releaseName: Stickit v__VERSION__
-          releaseBody: Linux and macOS, verified on both. Windows is untested and not published (see issue #1). macOS builds are unsigned, so Gatekeeper warns on first launch.
+          releaseBody: Linux, macOS and Windows. The macOS and Windows builds are unsigned, so Gatekeeper (macOS) and SmartScreen (Windows) warn on first launch.
           releaseDraft: true
           args: ${{ matrix.args }}
