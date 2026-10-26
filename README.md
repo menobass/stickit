@@ -25,6 +25,8 @@ Hyprland), encrypted on your machine, with optional backup and sync through the
 
 Requirements: Rust, Node.js 20+, and the
 [Tauri Linux prerequisites](https://tauri.app/start/prerequisites/#linux) (WebKitGTK and friends).
+On Windows, use the [Tauri Windows prerequisites](https://tauri.app/start/prerequisites/#windows)
+instead (see [Windows](#windows) below).
 
 ```sh
 git clone <this repo> stickit && cd stickit
@@ -46,8 +48,21 @@ To try it without building a release: `npm run tauri dev`.
 Linux, macOS and Windows all build from the same source. Pushing a `v*` tag runs
 `.github/workflows/release.yml`, which attaches `.deb`, `.rpm`, AppImage and `.dmg`
 installers to a draft release. The macOS build is unsigned, so Gatekeeper warns on
-first launch. Linux and macOS have been tested; Windows hasn't and isn't published yet
-(see [issue #1](https://github.com/menobass/stickit/issues/1)).
+first launch. Linux and macOS have been tested. Windows runs from source but installers aren't
+published yet (see [issue #1](https://github.com/menobass/stickit/issues/1)).
+
+### Windows
+
+Tested on Windows 11 with `npm run tauri dev`. You need:
+
+- Visual Studio 2022 (or its Build Tools) with the **Desktop development with C++** workload,
+  *including a Windows 10/11 SDK*. Without the SDK, linking fails with "`link.exe` not found".
+- The WebView2 runtime (already installed on Windows 10 and 11).
+
+Build from PowerShell or `cmd`, not Git Bash: Git Bash puts its own `link.exe` (a file-linking
+tool) ahead of the MSVC linker on `PATH`, and the build fails with "link: extra operand". If
+cloning fails with "Filename too long", run `git config --global core.longpaths true` or clone
+to a shorter path.
 
 ### Make notes float (Hyprland)
 
@@ -128,8 +143,9 @@ npx tsc --noEmit      # type-check the desktop app (use `npx tsc -p pwa` for the
 cargo test --manifest-path src-tauri/Cargo.toml
 ```
 
-Your data lives in `~/.local/share/dev.meno.stickit/stickit.db` (encrypted note bodies; the
-vault's wrapped keys; the sealed Hive posting key).
+Your data lives in `~/.local/share/dev.meno.stickit/stickit.db`, or
+`%APPDATA%\dev.meno.stickit\stickit.db` on Windows (encrypted note bodies; the vault's wrapped
+keys; the sealed Hive posting key).
 
 ## License
 
